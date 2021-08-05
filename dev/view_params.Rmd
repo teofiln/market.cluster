@@ -1,0 +1,119 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(flexclust)
+library(flexclust.golem)
+```
+
+```{r}
+params$data
+```
+
+```{r}
+params$solutions
+```
+
+```{r height=20,width=60}
+flexclust.golem::plot_profile(params$solutions,1)
+```
+```{r}
+  i=1
+  this_solution = params$solutions$fit_km[i][[1]]
+  k <- this_solution@k
+  seed = params$solutions$seed[i]
+  pop_av_dist <- with(this_solution@clusinfo, sum(size*av_dist)/sum(size))
+  main_txt <- paste("kcca ", "Av Dist = ", format(pop_av_dist, digits = 5), params$method, " - ",k,"seed=",seed)
+  
+  label_clust <- hclust(dist(t(as.matrix(data_df))))
+  
+  barchart(this_solution, 
+           which=label_clust$order,
+           main = main_txt, strip.prefix = "#",
+           scales = list(cex = 0.6),
+           shade = TRUE,
+           legend = TRUE,
+           clusters=5:6
+  )
+```
+```{r}
+cluster_data_balanced %>% janitor::clean_names() -> cluster_data_balanced
+```
+
+
+```{r}
+label_order = hclust(dist(t(as.matrix(cluster_data_balanced))))
+label_order$order
+length(label_order$order)
+var_labels = colnames(cluster_data_balanced)[label_order$order]
+length(var_labels)
+var_labels
+```
+
+```{r}
+bind_rows(
+  this_solution@xcent %>% as_tibble_row() %>% janitor::clean_names() %>% slice(rep(1:n(), each=6)) %>% add_column(segment = 1:6, part="all")  ,
+  this_solution@centers %>% as_tibble() %>% janitor::clean_names() %>% add_column(segment= 1:6, part="solution")
+) %>% 
+  pivot_longer(cols=1:67, names_to="variable", values_to = "value") %>% 
+  pivot_wider(id_cols = c(variable,segment,part), names_from = part, values_from=value) %>% 
+  mutate(
+    var_label = factor(variable, levels=var_labels),
+    diff = all - solution,
+    abs_diff = abs(diff),
+    abs_prop_diff = abs(diff/all),
+    signif = if_else(abs_diff > 0.5 | abs_prop_diff > 0.25, TRUE, FALSE),
+    shade = map2_chr(signif, segment,~flexclust::flxColors(n=.y, grey=!.x))
+    ) -> plot_data
+plot_data %>% View()
+```
+
+```{r fig.height=10}
+plot_data %>% 
+  ggplot() +
+  geom_point(aes(x=variable, y=all),col="black") +
+  geom_segment(aes(x=variable, y=0, xend=variable, yend=all),col="black") +
+  geom_col(aes(x=variable, y=solution, fill=I(shade)),alpha=0.5) +
+  coord_flip() +
+  facet_wrap(~segment) +
+  ylab("Proportion of Segment") 
+
+```
+
+```{r}
+plot_data %>% 
+  filter(str_starts(variable,"age")) %>% 
+  ggplot() +
+  geom_point(aes(x=variable, y=all),col="black") +
+  geom_segment(aes(x=variable, y=0, xend=variable, yend=all),col="black") +
+  geom_col(aes(x=variable, y=solution, fill=I(shade)),alpha=0.5) +
+  coord_flip() +
+  facet_wrap(~segment) +
+  ylab("Proportion of Segment") 
+
+```
+
+
+```{r}
+ggplot(data=plot_data %>% filter(part == "all", segment=="1"), aes(x=variable,y=value)) + 
+  geom_col() + 
+  geom_point(data=plot_data %>% filter(part == "solution", segment=="1"), aes(x=variable, y=value)) +
+  geom_segment(data=plot_data %>% filter(part == "solution", segment=="1"), aes(x=variable, y=0, xend=variable, yend=value)) +
+  facet_wrap(~segment) + coord_flip()
+```
+
+
+```{r}
+barchart(this_solution, 
+         which="age_group_(12,20]",
+         main = main_txt, strip.prefix = "#",
+         scales = list(cex = 0.6),
+         shade = TRUE,
+         legend = TRUE,
+         byvar=TRUE
+)
+```
+
