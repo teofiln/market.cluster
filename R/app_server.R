@@ -5,7 +5,7 @@
 #' @import shiny
 #' @noRd
 app_server <- function( input, output, session ) {
-  
+  shinyEventLogger::set_logging()
   # Your application server logic
   mod_load_data_server("load_data_ui_1")
   mod_EDA_server("EDA_ui_1")
