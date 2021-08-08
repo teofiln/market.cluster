@@ -103,7 +103,7 @@ golem_add_external_resources <- function(){
 app_page <- function(request) {
   tagList(
       # Logging on js
-      shinyEventLogger::log_init(),
+      # shinyEventLogger::log_init(),
       
                  navbarMenu("Data",
                             tabPanel("Load data",
