@@ -30,8 +30,7 @@
 #'   \item{disgusting}{Is it disgusting?}
 #' }
 #' @source \url{https://www.springer.com/gp/book/9789811088179}
-#' 
 ## code to prepare `data_df` dataset goes here
 data_df <- read.csv("data-raw/dataset.csv")
-usethis::use_data(data_df, overwrite = TRUE)
+usethis::use_data(data_df, internal = TRUE, overwrite = TRUE)
 

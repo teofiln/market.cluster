@@ -18,4 +18,4 @@ params <- list( seed = 12345,
                 method = "kmeans")
     
 
-usethis::use_data(params, overwrite = TRUE)
+usethis::use_data(params, internal = TRUE, overwrite = TRUE)
