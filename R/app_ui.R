@@ -96,9 +96,10 @@ golem_add_external_resources <- function(){
 
 #' App page
 #' 
-#' @description Generate the same UI as `app_ui()`, but 
+#' @description Generate the same UI as `app_ui()`, but without the page 
+#' containers
 #' 
-#' @noRd
+#' @export
 app_page <- function(request) {
   tagList(
       # Logging on js
