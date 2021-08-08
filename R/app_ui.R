@@ -102,30 +102,27 @@ golem_add_external_resources <- function(){
 #' @export
 app_page <- function(request) {
   tagList(
-      # Logging on js
-      # shinyEventLogger::log_init(),
+    # Logging on js
+    # shinyEventLogger::log_init(),
+    
+    navbarMenu("Cluster Workbench",
       
-                 navbarMenu("Data",
-                            tabPanel("Load data",
-                                     mod_load_data_ui("load_data_ui_1")
-                            ),         
-                            tabPanel("EDA",
-                                     mod_EDA_ui("EDA_ui_1")
-                            )
-                 ),
-                 navbarMenu("Pick Method",
-                            tabPanel("Common Methods",mod_kmeans_ui("kmeans_ui_1")),
-                            tabPanel("Partition Methods", mod_cluster_partition_ui("cluster_partition_ui_1"))
-                 ),
-                 tabPanel("Find K",
-                          mod_boot_kmeans_ui("boot_kmeans_ui_1")
-                 ),
-                 tabPanel("Pick K",
-                          mod_pick_k_ui("pick_k_ui_1")
-                 )
-                 # Can't get this to work.
-                 #tabPanel("About",
-                 #          fluidPage(includeHTML("data/McDonalds-Case-Study.html"))
-                 #)
+      "Data",
+      tabPanel("Load data", mod_load_data_ui("load_data_ui_1")),
+      tabPanel("EDA", mod_EDA_ui("EDA_ui_1")),
+      "-----",
+      "Pick Method",
+      tabPanel("Common Methods", mod_kmeans_ui("kmeans_ui_1")),
+      tabPanel("Partition Methods", mod_cluster_partition_ui("cluster_partition_ui_1")),
+      "-----",
+      "Find / Pick K",
+      tabPanel("Find K", mod_boot_kmeans_ui("boot_kmeans_ui_1")),
+      tabPanel("Pick K", mod_pick_k_ui("pick_k_ui_1"))
+      
+      # Can't get this to work.
+      #tabPanel("About",
+      #          fluidPage(includeHTML("data/McDonalds-Case-Study.html"))
+      #)
+    )
   )
 }
