@@ -69,7 +69,7 @@ mod_EDA_ui <- function(id){
 #'
 #' @noRd 
 mod_EDA_server <- function(id){
-  moduleServer( id, function(input, output, session){
+  shiny::moduleServer( id, function(input, output, session){
     ns <- session$ns
     
     # Logging
@@ -77,16 +77,16 @@ mod_EDA_server <- function(id){
     
     shinyEventLogger::log_message("mod_boot_kmeans_server")
     
-    DATA <- reactiveVal(data_df)
+    DATA <- shiny::reactiveVal(data_df)
     
     ##### Plot Size in reactive
     
-    plotsize <- reactive({
-      req(input$plotsize)
+    plotsize <- shiny::reactive({
+      shiny::req(input$plotsize)
       as.numeric(input$plotsize)
     })
     
-    plotHeight <- reactive(480 * plotsize())      
+    plotHeight <- shiny::reactive(480 * plotsize())      
     
     #####
     
@@ -128,7 +128,7 @@ mod_EDA_server <- function(id){
     
     output$print_skim <- shiny::renderPrint({
       shinyEventLogger::log_message("save DATA to params$data")
-        params$data <<- DATA()
+        session$userData$PARAMS$data <- DATA()
       shinyEventLogger::log_message("output$print_skim")
         skimr::skim(DATA())
     },width=120)
@@ -139,9 +139,9 @@ mod_EDA_server <- function(id){
     
     observeEvent(input$replace_data, {
       shinyEventLogger::log_message("input$replace_data\n BEFORE data_df:",nrow(data_df),"rows  new_data_df:", nrow(new_data_df)," rows")
-      data_df <<- new_data_df
-      DATA <- reactiveVal(data_df)
-      shinyEventLogger::log_message("AFTER  data_df:",nrow(data_df),"rows  new_data_df:", nrow(new_data_df)," rows")
+      session$userData$DATA_DF <- new_data_df
+      DATA <- reactiveVal(session$userData$DATA_DF)
+      shinyEventLogger::log_message("AFTER  data_df:", nrow(session$userData$DATA_DF),"rows  new_data_df:", nrow(session$userData$DATA_DF)," rows")
       
     })
     
