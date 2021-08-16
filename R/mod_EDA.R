@@ -88,6 +88,7 @@ mod_EDA_server <- function(id){
     DATA <- shiny::reactiveVal(session$userData$RADIANT_DATA)
     
     shiny::observe({
+      browser()
       shiny::req(DATA())
       print(head(DATA()))
       ### 
