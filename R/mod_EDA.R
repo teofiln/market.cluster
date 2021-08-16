@@ -13,7 +13,7 @@ mod_EDA_ui <- function(id){
     shiny::sidebarLayout(
       shiny::sidebarPanel(
         width = 3,
-        shiny::tag$h3("Exploratory Plots"),
+        shiny::tags$h3("Exploratory Plots"),
         shiny::radioButtons(
           ns("which_data"),
           "Select data",
