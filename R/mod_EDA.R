@@ -90,6 +90,9 @@ mod_EDA_server <- function(id){
     shiny::observe({
       shiny::req(DATA())
       print(head(DATA()))
+      ### 
+      print("this is the session radiant data object")
+      print(head(session$userData$RADIANT_DATA))
     })
     
     ##### Plot Size in reactive
