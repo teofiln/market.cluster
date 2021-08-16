@@ -11,7 +11,7 @@ mod_EDA_ui <- function(id){
   ns <- shiny::NS(id)
   shiny::tagList(
     shiny::sidebarLayout(
-      shiny::idebarPanel(
+      shiny::sidebarPanel(
         width = 3,
         shiny::tag$h3("Exploratory Plots"),
         shiny::radioButtons(
