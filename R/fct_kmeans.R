@@ -179,7 +179,7 @@ fit_partition <- function(.params) {
         verbose = TRUE,
         seed = .params$seed,
         nrep = .params$km_nrep,
-        FUN = cclust,
+        FUN = flexclust::cclust,
         dist = cclust_dist,
         method = cclust_method,
         control = cclust_ctl,

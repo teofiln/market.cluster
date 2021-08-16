@@ -26,22 +26,22 @@ mod_load_data_ui <- function(id){
 #'
 #' @noRd 
 mod_load_data_server <- function(id){
-  moduleServer( id, function(input, output, session){
+  shiny::moduleServer( id, function(input, output, session){
     ns <- session$ns
     shinyEventLogger::set_logging_session()
     
     shinyEventLogger::log_message("mod_load_data_server")
     
-    output$summary <- renderPrint({
+    output$summary <- shiny::renderPrint({
       shinyEventLogger::log_message("output$summary data_path:",input$load_data$datapath)
       
       file <- input$load_data
       ext <- tools::file_ext(file$datapath)
-      req(file$datapath)
-      validate(need(ext == "csv", "Please upload a csv file"))
+      shiny::req(file$datapath)
+      shiny::validate(shiny::need(ext == "csv", "Please upload a csv file"))
       
-      new_data_df <<- read.csv(file$datapath)    
-      summary(new_data_df)
+      session$userData$NEW_DATA_DF <- read.csv(file$datapath)
+      summary(session$userData$NEW_DATA_DF)
     })
   
  

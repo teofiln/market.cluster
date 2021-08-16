@@ -68,7 +68,7 @@ mod_model_based_server <- function(input, output, session){
     session$userData$PARAMS$km_nrep <- input$enter_km_nrep
     session$userData$PARAMS$method <- input$method
     
-    params$flexmix_model <<- fit_flexmix(
+    session$userData$PARAMS$flexmix_model <- fit_flexmix(
       seed =    session$userData$PARAMS$seed,
       start_k = session$userData$PARAMS$start_k,
       end_k =   session$userData$PARAMS$end_k,
