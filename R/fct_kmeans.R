@@ -42,8 +42,8 @@ fit_kmeans <-
       warning("Running stepFlexclust...")
       km <-
         flexclust::stepFlexclust(
-          as.matrix(data_df),
-          start_k:end_k,
+          x = as.matrix(data_df),
+          k = start_k:end_k,
           nrep = nrep,
           family = flexclust::kccaFamily(method),
           verbose = show_progress,
@@ -53,7 +53,7 @@ fit_kmeans <-
       
     } else if (method == "hclust") {
       km <- flexclust::stepFlexclust(
-        as.matrix(data_df),
+        x = as.matrix(data_df),
         k = start_k:end_k,
         nrep = 1,
         FUN = hclust_kcca,
@@ -154,7 +154,7 @@ params_to_kccaFamily <- function(.params) {
   return(fam)
 }
 
-fit_partition <- function(.params) {
+fit_partition <- function(.params, .data_df) {
   MC = FALSE
   
   if (.params$centering_method == "Fast Kmeans") {
@@ -174,7 +174,7 @@ fit_partition <- function(.params) {
     
     cluster_fit <-
       flexclust::stepFlexclust(
-        x = data_df,
+        x = .data_df,
         k = .params$start_k:.params$end_k,
         verbose = TRUE,
         seed = .params$seed,
@@ -194,12 +194,12 @@ fit_partition <- function(.params) {
     
     cluster_fit <-
       flexclust::stepFlexclust(
-        x = data_df,
+        x = .data_df,
         k = .params$start_k:.params$end_k,
         verbose = TRUE,
         seed = .params$seed,
         nrep = .params$km_nrep,
-        FUN = kcca,
+        FUN = flexclust::kcca,
         family = kcca_fam,
         control = kcca_ctl,
         multicore = MC
