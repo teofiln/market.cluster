@@ -12,8 +12,6 @@ app_server <- function(input, output, session) {
   session$userData$DATA_DF <- data_df
   session$userData$NEW_DATA_DF <- new_data_df
   
-  browser()
-  
   mod_load_data_server("load_data_ui_1")
   mod_EDA_server("EDA_ui_1")
   mod_kmeans_server("kmeans_ui_1")
