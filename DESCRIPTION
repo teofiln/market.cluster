@@ -4,6 +4,10 @@ Version: 0.0.0.9000
 Authors@R: person('Herman', 'Tan', email = 'herman@redcubesg.com', role = c('cre', 'aut'))
 Description: Clustering of MacDonalds Yes/No Survey.  Taken from MSA package.  Clustering using flexclust package.
 License: MIT + file LICENSE
+Depends:
+    R (>= 2.10),
+    flexclust,
+    ggfortify
 Imports: 
     config,
     golem,
@@ -13,7 +17,6 @@ Imports:
     DT,
     glue,
     htmltools,
-    flexclust,
     dplyr,
     ggplot2,
     tidyr,
@@ -24,7 +27,6 @@ Imports:
     grid,
     lattice,
     modeltools,
-    ggfortify,
     clue,
     broom,
     skimr,
@@ -42,5 +44,4 @@ Suggests:
     testthat,
     spelling
 Language: en-US
-Depends: 
-    R (>= 2.10)
+
