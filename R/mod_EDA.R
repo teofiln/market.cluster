@@ -88,14 +88,25 @@ mod_EDA_server <- function(id){
     DATA <- shiny::reactiveVal(session$userData$RADIANT_DATA)
     
     shiny::observe({
-      browser()
       shiny::req(DATA())
       print(head(DATA()))
       ### 
       print("this is the session radiant data object")
-      print(head(session$userData$RADIANT_DATA))
+      print(head(session$userData$RADIANT_DATA[[1]]))
     })
     
+    #####
+    output$print_skim <- shiny::renderPrint({
+      shinyEventLogger::log_message("save DATA to params$data")
+      session$userData$PARAMS$data <- DATA()
+      shinyEventLogger::log_message("output$print_skim")
+      skimr::skim(DATA())
+    }, width = 120)
+    
+    
+    
+    if (FALSE) {
+      
     ##### Plot Size in reactive
     
     plotsize <- shiny::reactive({
@@ -140,14 +151,6 @@ mod_EDA_server <- function(id){
     output$plot_tsne <- shiny::renderUI({
       shiny::plotOutput(ns("plot_tsne_raw"), height = plotHeight())
     })
-    
-    #####
-    output$print_skim <- shiny::renderPrint({
-      shinyEventLogger::log_message("save DATA to params$data")
-      session$userData$PARAMS$data <- DATA()
-      shinyEventLogger::log_message("output$print_skim")
-      skimr::skim(DATA())
-    }, width = 120)
     
     output$print_summary_pca <- shiny::renderPrint({
       print_summary_pca(DATA())
@@ -199,6 +202,9 @@ mod_EDA_server <- function(id){
     })
     
     ####
+    
+    } # false statement
+    
   })
 }
     
