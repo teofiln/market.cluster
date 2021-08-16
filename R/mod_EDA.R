@@ -77,7 +77,7 @@ mod_EDA_server <- function(id){
     
     shinyEventLogger::log_message("mod_boot_kmeans_server")
     
-    DATA <- shiny::reactiveVal(data_df)
+    DATA <- shiny::reactiveVal(session$userData$RADIANT_DATA)
     
     ##### Plot Size in reactive
     
@@ -91,83 +91,97 @@ mod_EDA_server <- function(id){
     #####
     
 
-    output$plot_responses <- renderPlot({
+    output$plot_responses <- shiny::renderPlot({
       plot_responses(DATA())
     })
     
-    output$plot_responses_pct <- renderPlot({
-        plot_responses_pct(DATA())
+    output$plot_responses_pct <- shiny::renderPlot({
+      plot_responses_pct(DATA())
     })
 
     ## Plot PCA
     
-    output$plot_pca_raw <- renderPlot({
+    output$plot_pca_raw <- shiny::renderPlot({
       plot_pca(DATA())
     })
     
-    output$plot_pca <- renderUI({
-      plotOutput(ns("plot_pca_raw"), height = plotHeight())
+    output$plot_pca <- shiny::renderUI({
+      shiny::plotOutput(ns("plot_pca_raw"), height = plotHeight())
     })
     
     #####
     
     ## Plot tsne
     
-    output$plot_tsne_raw <- renderPlot({
-        plot_tsne(data=DATA(),
-                  perp=input$perplexity,
-                  theta=input$theta,
-                  exag=input$exag)
+    output$plot_tsne_raw <- shiny::renderPlot({
+      plot_tsne(
+        data = DATA(),
+        perp = input$perplexity,
+        theta = input$theta,
+        exag = input$exag
+      )
     })
     
-    output$plot_tsne <- renderUI({
-      plotOutput(ns("plot_tsne_raw"), height = plotHeight())
+    output$plot_tsne <- shiny::renderUI({
+      shiny::plotOutput(ns("plot_tsne_raw"), height = plotHeight())
     })
     
     #####
     
     output$print_skim <- shiny::renderPrint({
       shinyEventLogger::log_message("save DATA to params$data")
-        session$userData$PARAMS$data <- DATA()
+      session$userData$PARAMS$data <- DATA()
       shinyEventLogger::log_message("output$print_skim")
-        skimr::skim(DATA())
-    },width=120)
+      skimr::skim(DATA())
+    }, width = 120)
     
     output$print_summary_pca <- shiny::renderPrint({
-        print_summary_pca(DATA())
+      print_summary_pca(DATA())
     })
     
-    observeEvent(input$replace_data, {
-      shinyEventLogger::log_message("input$replace_data\n BEFORE data_df:",nrow(data_df),"rows  new_data_df:", nrow(new_data_df)," rows")
+    shiny::observeEvent(input$replace_data, {
+      shinyEventLogger::log_message(
+        "input$replace_data\n BEFORE data_df:",
+        nrow(data_df),
+        "rows  new_data_df:",
+        nrow(new_data_df),
+        " rows"
+      )
       session$userData$DATA_DF <- new_data_df
-      DATA <- reactiveVal(session$userData$DATA_DF)
-      shinyEventLogger::log_message("AFTER  data_df:", nrow(session$userData$DATA_DF),"rows  new_data_df:", nrow(session$userData$DATA_DF)," rows")
+      DATA <- shiny::reactiveVal(session$userData$DATA_DF)
+      shinyEventLogger::log_message(
+        "AFTER  data_df:",
+        nrow(session$userData$DATA_DF),
+        "rows  new_data_df:",
+        nrow(session$userData$DATA_DF),
+        " rows"
+      )
     })
     
-    observeEvent(input$which_data, {
-      if(input$which_data == "current"){
+    shiny::observeEvent(input$which_data, {
+      if (input$which_data == "current") {
         DATA(data_df)
       } else {
         DATA(new_data_df)
       }
     })
     
-    output$plot_pca_scree <- renderPlot({
-      plot_pca_scree(DATA(),which=input$scree_which)
+    output$plot_pca_scree <- shiny::renderPlot({
+      plot_pca_scree(DATA(), which = input$scree_which)
     })
     
-    output$table_components <- renderDataTable({
+    output$table_components <- shiny::renderDataTable({
       table_components(DATA())
     })
     
     ## Plot correlation pairs
     
-    output$plot_pairs_raw <- renderPlot({
+    output$plot_pairs_raw <- shiny::renderPlot({
       plot_pairs(DATA())
     })
     
-    output$plot_pairs <- renderUI({
-      plotOutput(ns("plot_pairs_raw"), height = plotHeight())
+    output$plot_pairs <- shiny::renderUI({
+      shiny::plotOutput(ns("plot_pairs_raw"), height = plotHeight())
     })
     
     ####
