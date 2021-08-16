@@ -20,10 +20,10 @@ app_server <- function(input, output, session) {
   mod_pick_k_server("pick_k_ui_1")
   shiny::callModule(mod_model_based_server, "model_based_ui_1")
   
-  # return(list(
-  #   set_radiant_data = function(value) {
-  #     session$userData$radiant_data <- value
-  #   }
-  # ))
+  return(list(
+    set_radiant_data = function(value) {
+      session$userData$RADIANT_DATA <- value
+    }
+  ))
   
 }
