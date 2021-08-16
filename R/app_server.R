@@ -19,4 +19,5 @@ app_server <- function( input, output, session ) {
   mod_boot_kmeans_server("boot_kmeans_ui_1")
   mod_pick_k_server("pick_k_ui_1")
   callModule(mod_model_based_server, "model_based_ui_1")
+  
 }

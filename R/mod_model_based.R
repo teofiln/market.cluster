@@ -56,25 +56,27 @@ mod_model_based_server <- function(input, output, session){
   
   shinyEventLogger::log_message("mod_kmeans_server")
   shinyEventLogger::log_message("FM_MODEL set to params$flexmix_model")
-  FM_MODEL <- reactiveVal(params$flexmix_model)
+  FM_MODEL <- reactiveVal(session$userData$PARAMS$flexmix_model)
   
   observeEvent(input$run_flexmix,{
     
     shinyEventLogger::log_started("mod_kmeans_server",name="fit_kmeans")
     
-    params$seed <<- 12345 #input$enter_seed
-    params$start_k <<- input$enter_start_end_k[1]
-    params$end_k <<- input$enter_start_end_k[2]
-    params$km_nrep <<- input$enter_km_nrep
-    params$method <<- input$method
+    session$userData$PARAMS$seed <- 12345 #input$enter_seed
+    session$userData$PARAMS$start_k <- input$enter_start_end_k[1]
+    session$userData$PARAMS$end_k <- input$enter_start_end_k[2]
+    session$userData$PARAMS$km_nrep <- input$enter_km_nrep
+    session$userData$PARAMS$method <- input$method
     
-    params$flexmix_model <<- fit_flexmix(seed=params$seed,
-                                        start_k=params$start_k,
-                                        end_k=params$end_k,
-                                        nrep=params$km_nrep,
-                                        method=params$method)
+    params$flexmix_model <<- fit_flexmix(
+      seed =    session$userData$PARAMS$seed,
+      start_k = session$userData$PARAMS$start_k,
+      end_k =   session$userData$PARAMS$end_k,
+      nrep =    session$userData$PARAMS$km_nrep,
+      method =  session$userData$PARAMS$method
+    )
     
-    FM_MODEL(params$flexmix_model)
+    FM_MODEL(session$userData$PARAMS$flexmix_model)
     
     shinyEventLogger::log_done("mod_kmeans_server",name="fit_kmeans")
     

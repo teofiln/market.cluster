@@ -73,7 +73,7 @@ mod_cluster_partition_server <- function(id){
     
     shinyEventLogger::log_message("mod_cluster_partition_server")
     shinyEventLogger::log_message("KM_MODEL set to params$km_model")
-    KM_MODEL <- reactiveVal(params$km_model)
+    KM_MODEL <- reactiveVal(session$userData$PARAMS$km_model)
     
     # Click on run cluster button
     observeEvent(input$run, {
@@ -88,25 +88,25 @@ mod_cluster_partition_server <- function(id){
                                     "\ninput$centering_method:", input$centering_method,
                                     "\ninput$distance:", input$distance_function)
       # Save values to global params
-      params$seed <<- input$enter_seed
-      params$start_k <<- input$enter_start_end_k[1]
-      params$end_k <<- input$enter_start_end_k[2]
-      params$init_center <<- input$init_center
-      params$classification <<- input$classification
-      params$max_iter <<- input$max_iter
-      params$km_nrep <<- input$enter_km_nrep
-      params$method <<- paste(input$centering_method,"/",input$distance_function)
-      params$centering_method <<- input$centering_method
-      params$distance <<- input$distance_function
+      session$userData$PARAMS$seed <- input$enter_seed
+      session$userData$PARAMS$start_k <- input$enter_start_end_k[1]
+      session$userData$PARAMS$end_k <- input$enter_start_end_k[2]
+      session$userData$PARAMS$init_center <- input$init_center
+      session$userData$PARAMS$classification <- input$classification
+      session$userData$PARAMS$max_iter <- input$max_iter
+      session$userData$PARAMS$km_nrep <- input$enter_km_nrep
+      session$userData$PARAMS$method <- paste(input$centering_method,"/",input$distance_function)
+      session$userData$PARAMS$centering_method <- input$centering_method
+      session$userData$PARAMS$distance <- input$distance_function
       
       shinyEventLogger::log_started("input$run")
       # Save the model for future use
-      params$km_model <<- fit_partition()
-      shinyEventLogger::log_message("length(km_model) ",length(params$km_model),name="fit_partition")
-      shinyEventLogger::log_message("length(km_model@models) ",length(params$km_model@models),name="fit_partition")
+      session$userData$PARAMS$km_model <- fit_partition(.params = session$userData$PARAMS)
+      shinyEventLogger::log_message("length(km_model) ",length(session$userData$PARAMS$km_model),name="fit_partition")
+      shinyEventLogger::log_message("length(km_model@models) ",length(session$userData$PARAMS$km_model@models),name="fit_partition")
       shinyEventLogger::log_done("input$run")
       
-      KM_MODEL(params$km_model) # Need to use reactiveVal to trigger redraw 
+      KM_MODEL(session$userData$PARAMS$km_model) # Need to use reactiveVal to trigger redraw 
     })
     
     output$plot_scree <- renderPlot({

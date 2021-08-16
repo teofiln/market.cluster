@@ -55,36 +55,36 @@ mod_kmeans_server <- function(id){
     
     shinyEventLogger::log_message("mod_kmeans_server")
     shinyEventLogger::log_message("KM_MODEL set to params$km_model")
-    KM_MODEL <- reactiveVal(params$km_model)
+    KM_MODEL <- reactiveVal(session$userData$PARAMS$km_model)
     
     # Click on run cluster button
     observeEvent(input$run_kmeans, {
 
       # Save values to global params
-      params$seed <<- 12345 #input$enter_seed
-      params$start_k <<- input$enter_start_end_k[1]
-      params$end_k <<- input$enter_start_end_k[2]
-      params$km_nrep <<- input$enter_km_nrep
-      params$method <<- input$method
-      params$max_iter <<- input$enter_iter_max
+      session$userData$PARAMS$seed <- 12345 #input$enter_seed
+      session$userData$PARAMS$start_k <- input$enter_start_end_k[1]
+      session$userData$PARAMS$end_k <- input$enter_start_end_k[2]
+      session$userData$PARAMS$km_nrep <- input$enter_km_nrep
+      session$userData$PARAMS$method <- input$method
+      session$userData$PARAMS$max_iter <- input$enter_iter_max
 
       shinyEventLogger::log_started("mod_kmeans_server",name="fit_kmeans")
       # Save the model for future use
-      params$km_model <<- fit_kmeans(seed=params$seed,
-                          start_k=params$start_k,
-                          end_k=params$end_k,
-                          nrep=params$km_nrep,
-                          max_iter=params$max_iter,
-                          method=params$method)
-      shinyEventLogger::log_message("length(km_model) ",length(params$km_model),name="fit_kmeans")
-      shinyEventLogger::log_message("length(km_model@models) ",length(params$km_model@models),name="fit_kmeans")
+      session$userData$PARAMS$km_model <- fit_kmeans(seed=session$userData$PARAMS$seed,
+                          start_k=session$userData$PARAMS$start_k,
+                          end_k=session$userData$PARAMS$end_k,
+                          nrep=session$userData$PARAMS$km_nrep,
+                          max_iter=session$userData$PARAMS$max_iter,
+                          method=session$userData$PARAMS$method)
+      shinyEventLogger::log_message("length(km_model) ",length(session$userData$PARAMS$km_model),name="fit_kmeans")
+      shinyEventLogger::log_message("length(km_model@models) ",length(session$userData$PARAMS$km_model@models),name="fit_kmeans")
       shinyEventLogger::log_done("mod_kmeans_server",name="fit_kmeans")
 
-      KM_MODEL(params$km_model) # Need to use reactiveVal to trigger redraw 
+      KM_MODEL(session$userData$PARAMS$km_model) # Need to use reactiveVal to trigger redraw 
     })
     
     output$plot_scree <- renderPlot({
-      #KM_MODEL(params$km_model)
+      #KM_MODEL(session$userData$PARAMS$km_model)
       validate(
         need(length(KM_MODEL())>0,"Run KMeans first")
       )

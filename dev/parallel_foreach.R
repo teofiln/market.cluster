@@ -45,7 +45,7 @@ method="neuralgas"
 #                                       multicore=FALSE),))
 
 trials <- tibble(seed=seeds)
-trials$fit_km <- foreach(seed=seeds, .combine = "c") %dopar% {
+trials$fit_km <- foreach(seed=seeds, .combine = "c") foreach::%dopar% {
   flexclust::stepcclust(as.matrix(data_df),start_k:end_k,seed=seed,nrep=km_nrep,
              method=method, verbose=show_progress,
              multicore=FALSE)

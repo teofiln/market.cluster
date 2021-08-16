@@ -50,59 +50,59 @@ mod_boot_kmeans_server <- function(id){
     shinyEventLogger::log_message("BOOT_KM_MODEL set to params$boot_km_model")
     
     # Variable shared between panels
-    BOOT_KM_MODEL <- reactiveVal(params$boot_km_model)
-    REPS_KM_MODEL <- reactiveVal(params$reps_km_model)
+    BOOT_KM_MODEL <- reactiveVal(session$userData$PARAMS$boot_km_model)
+    REPS_KM_MODEL <- reactiveVal(session$userData$PARAMS$reps_km_model)
     
     output$show_seed <- renderText({
-      paste("Seed set as ",as.character(params$seed))
+      paste("Seed set as ",as.character(session$userData$PARAMS$seed))
     })
 
     output$show_start_k <- renderText({
-      paste("Starting K set as ",as.character(params$start_k))
+      paste("Starting K set as ",as.character(session$userData$PARAMS$start_k))
     })
 
     output$show_end_k <- renderText({
-      paste("Ending K set as ",as.character(params$end_k))
+      paste("Ending K set as ",as.character(session$userData$PARAMS$end_k))
     })
 
     output$show_km_nrep <- renderText({
-      paste("Kmeans iteration set as ",as.character(params$km_nrep))
+      paste("Kmeans iteration set as ",as.character(session$userData$PARAMS$km_nrep))
     })
     
     output$show_method <- renderText({
-      paste("Clustering method ",as.character(params$method))
+      paste("Clustering method ",as.character(session$userData$PARAMS$method))
     })
 
     observeEvent(input$run_boot_kmeans, {
       
       # Save values to global params
-      params$boot_rep = input$enter_boot_rep
+      session$userData$PARAMS$boot_rep = input$enter_boot_rep
       
       shinyEventLogger::log_started("mod_boot_kmeans_server",name="fit_boot_kmeans")
       # Save the model for future use
-      params$boot_km_model <<- fit_boot_kmeans(seed=params$seed,
-                                   start_k=params$start_k,
-                                   end_k=params$end_k,
-                                   km_nrep=params$km_nrep,
-                                   boot_rep = params$boot_rep,
-                                   method=params$method)
-      shinyEventLogger::log_message("length(boot_km_model) ",length(params$boot_km_model),name="fit_boot_kmeans")
+      session$userData$PARAMS$boot_km_model <- fit_boot_kmeans(seed=session$userData$PARAMS$seed,
+                                   start_k=session$userData$PARAMS$start_k,
+                                   end_k=session$userData$PARAMS$end_k,
+                                   km_nrep=session$userData$PARAMS$km_nrep,
+                                   boot_rep = session$userData$PARAMS$boot_rep,
+                                   method=session$userData$PARAMS$method)
+      shinyEventLogger::log_message("length(boot_km_model) ",length(session$userData$PARAMS$boot_km_model),name="fit_boot_kmeans")
       shinyEventLogger::log_done("mod_boot_kmeans_server",name="fit_boot_kmeans")
       
       BOOT_KM_MODEL(params$boot_km_model) # Need to use reactiveVal to trigger redraw 
       
       shinyEventLogger::log_started("mod_boot_kmeans_server",name="fit_reps_kmeans")
       # Save the model for future use
-      params$reps_km_model <<- fit_reps_kmeans(seed=params$seed,
-                                             start_k=params$start_k,
-                                             end_k=params$end_k,
-                                             km_nrep=params$km_nrep,
-                                             fit_nrep = params$boot_rep,
-                                             method=params$method)
-      shinyEventLogger::log_message("length(reps_km_model) ",length(params$reps_km_model),name="fit_reps_kmeans")
+      session$userData$PARAMS$reps_km_model <- fit_reps_kmeans(seed=session$userData$PARAMS$seed,
+                                             start_k=session$userData$PARAMS$start_k,
+                                             end_k=session$userData$PARAMS$end_k,
+                                             km_nrep=session$userData$PARAMS$km_nrep,
+                                             fit_nrep = session$userData$PARAMS$boot_rep,
+                                             method=session$userData$PARAMS$method)
+      shinyEventLogger::log_message("length(reps_km_model) ",length(session$userData$PARAMS$reps_km_model),name="fit_reps_kmeans")
       shinyEventLogger::log_done("mod_boot_kmeans_server",name="fit_reps_kmeans")
       
-      REPS_KM_MODEL(params$reps_km_model) # Need to use reactiveVal to trigger redraw 
+      REPS_KM_MODEL(session$userData$PARAMS$reps_km_model) # Need to use reactiveVal to trigger redraw 
       
     })
     

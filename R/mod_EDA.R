@@ -142,7 +142,6 @@ mod_EDA_server <- function(id){
       session$userData$DATA_DF <- new_data_df
       DATA <- reactiveVal(session$userData$DATA_DF)
       shinyEventLogger::log_message("AFTER  data_df:", nrow(session$userData$DATA_DF),"rows  new_data_df:", nrow(session$userData$DATA_DF)," rows")
-      
     })
     
     observeEvent(input$which_data, {
@@ -172,7 +171,6 @@ mod_EDA_server <- function(id){
     })
     
     ####
-    
   })
 }
     
