@@ -74,10 +74,14 @@ mod_EDA_server <- function(id){
     
     # Logging
     shinyEventLogger::set_logging_session()
-    
     shinyEventLogger::log_message("mod_boot_kmeans_server")
     
     DATA <- shiny::reactiveVal(session$userData$RADIANT_DATA)
+    
+    shiny::observe({
+      shiny::req(DATA())
+      print(summary(DATA()))
+    })
     
     ##### Plot Size in reactive
     
