@@ -43,8 +43,6 @@ mod_load_data_server <- function(id){
       session$userData$NEW_DATA_DF <- read.csv(file$datapath)
       summary(session$userData$NEW_DATA_DF)
     })
-  
- 
   })
 }
     
