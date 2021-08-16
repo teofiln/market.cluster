@@ -8,54 +8,63 @@
 #'
 #' @importFrom shiny NS tagList 
 mod_EDA_ui <- function(id){
-  ns <- NS(id)
-  tagList(
-    sidebarLayout(
-      sidebarPanel( width=3,
-        h3("Exploratory Plots"),
-        radioButtons(ns("which_data"),"Select data", choices=c("current","new"),selected="current"),
-        actionButton(ns("replace_data"),"Replace current with new"),
-        sliderInput(ns("plotsize"),
-                    label   = 'Plot size',
-                    value = 2,
-                    min = 1, max=6, step=1
+  ns <- shiny::NS(id)
+  shiny::tagList(
+    shiny::sidebarLayout(
+      shiny::idebarPanel(
+        width = 3,
+        shiny::tag$h3("Exploratory Plots"),
+        shiny::radioButtons(
+          ns("which_data"),
+          "Select data",
+          choices = c("current", "new"),
+          selected = "current"
+        ),
+        shiny::actionButton(ns("replace_data"), "Replace current with new"),
+        shiny::sliderInput(
+          ns("plotsize"),
+          label   = 'Plot size',
+          value = 2,
+          min = 1,
+          max = 6,
+          step = 1
         )
       ),
-      mainPanel( width = 9,
-        tabsetPanel(
-          tabPanel("Summary",
-                   verbatimTextOutput(ns("print_skim"))
+      shiny::mainPanel( width = 9,
+                        shiny::tabsetPanel(
+                          shiny::tabPanel("Summary",
+                                          shiny::verbatimTextOutput(ns("print_skim"))
                    #textOutput(ns("print_skim"))
                    #htmlOutput(ns("print_skim"))
                    ),
-          tabPanel("Plot count",
-                   plotOutput(ns("plot_responses"))
+                   shiny::tabPanel("Plot count",
+                                   shiny::plotOutput(ns("plot_responses"))
                    ),
-          tabPanel("Plot Proportion",
-                   plotOutput(ns("plot_responses_pct"))
+                   shiny::tabPanel("Plot Proportion",
+                                   shiny::plotOutput(ns("plot_responses_pct"))
                    ),
-          tabPanel("PCA",
-                   uiOutput(ns("plot_pca")),
-                   verbatimTextOutput(ns("print_summary_pca")),
+                   shiny::tabPanel("PCA",
+                                   shiny::uiOutput(ns("plot_pca")),
+                                   shiny::verbatimTextOutput(ns("print_summary_pca")),
           ),
-          tabPanel("PCA Scree",
-                   selectInput(ns("scree_which"),"Which scree plot",
+          shiny::tabPanel("PCA Scree",
+                          shiny::selectInput(ns("scree_which"),"Which scree plot",
                                choices = c("Standard deviation","Proportion of Variance","Cumulative Proportion","Eigen Values"),
                                selected = "Eigen Values"),
-                   plotOutput(ns("plot_pca_scree")),
-                   dataTableOutput(ns("table_components"))
+                          shiny::plotOutput(ns("plot_pca_scree")),
+                          shiny::dataTableOutput(ns("table_components"))
           ),
-          tabPanel("Correlation Plot",
-                   uiOutput(ns("plot_pairs"))
+          shiny::tabPanel("Correlation Plot",
+                          shiny::uiOutput(ns("plot_pairs"))
                    ),
-          tabPanel("tSNE",
-                   sliderInput(ns("perplexity"),"Perplexity",
+          shiny::tabPanel("tSNE",
+                          shiny::sliderInput(ns("perplexity"),"Perplexity",
                                min = 1, max=100,value=50,step=5),
-                   sliderInput(ns("theta"),"Theta",
+                          shiny::sliderInput(ns("theta"),"Theta",
                                min = 0.0, max=1.0,value=0.5,step=0.1),
-                   sliderInput(ns("exag"),"Exagerration",
+                          shiny::sliderInput(ns("exag"),"Exagerration",
                                min = 0.0, max=50,value=12,step=1),
-                   uiOutput(ns("plot_tsne"))
+                          shiny::uiOutput(ns("plot_tsne"))
           )
           
         )
@@ -80,7 +89,7 @@ mod_EDA_server <- function(id){
     
     shiny::observe({
       shiny::req(DATA())
-      print(summary(DATA()))
+      print(head(DATA()))
     })
     
     ##### Plot Size in reactive
@@ -93,8 +102,6 @@ mod_EDA_server <- function(id){
     plotHeight <- shiny::reactive(480 * plotsize())      
     
     #####
-    
-
     output$plot_responses <- shiny::renderPlot({
       plot_responses(DATA())
     })
@@ -131,7 +138,6 @@ mod_EDA_server <- function(id){
     })
     
     #####
-    
     output$print_skim <- shiny::renderPrint({
       shinyEventLogger::log_message("save DATA to params$data")
       session$userData$PARAMS$data <- DATA()
